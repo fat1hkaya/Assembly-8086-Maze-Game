@@ -2,7 +2,6 @@
 .STACK 100h
 
 .DATA
-   
     
     MAP1 DB 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
          DB 1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1
@@ -25,9 +24,6 @@
          DB 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
          DB 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 
-    
-
-    
     MAP2 DB 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
          DB 1,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,1
          DB 1,0,1,1,1,0,1,0,1,1,1,1,1,0,1,0,1,1,0,1
@@ -48,8 +44,7 @@
          DB 1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,2,1
          DB 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
          DB 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1  
-         
-         
+
     MAP3 DB 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
          DB 1,0,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,1
          DB 1,0,1,0,1,1,1,0,1,0,1,1,1,0,1,0,1,1,0,1
@@ -74,8 +69,9 @@
     CURRENT_MAP DB 400 DUP(0) 
 
     CURRENT_LEVEL DB 1  
-    TIME_LEFT DW 180    ; 3 Dakika
-    PREV_SEC DB 0       
+    TIME_LEFT DW 180   
+    PREV_SEC DB 0   
+    TIMER_TEXT DB 'SURE:$'  
     
     PLAYER_X DW 1       
     PLAYER_Y DW 1       
@@ -209,14 +205,12 @@ EXIT_GAME:
     INT 21h
 MAIN ENDP
 
-
 GET_SCREEN_OFFSET PROC
     PUSH AX
     PUSH BX
     PUSH CX
     PUSH DX
 
-    
     MOV CX, 80
     MUL CX          
     ADD AX, BX      
@@ -311,16 +305,13 @@ DRAW_EXIT:
 
 PRINT_CHAR:
     PUSH AX         
-    
     MOV AX, DX      
-    
     CALL GET_SCREEN_OFFSET 
-    
     POP AX          
 
     MOV ES:[DI], AL
     MOV ES:[DI+1], AH
-
+                                                
     INC BX          
     CMP BX, 20      
     JNE NEXT_CELL
@@ -356,13 +347,30 @@ CLEAR_PLAYER ENDP
 
 DRAW_TIMER PROC
     
+    PUSH SI
+    PUSH DI
+    MOV SI, 0
+    MOV DI, 3528        
+    
+PRINT_TEXT_LOOP:
+    MOV AL, TIMER_TEXT[SI]
+    CMP AL, '$'
+    JE DONE_TEXT
+    MOV ES:[DI], AL
+    MOV BYTE PTR ES:[DI+1], 0Fh 
+    ADD DI, 2
+    INC SI
+    JMP PRINT_TEXT_LOOP
+
+DONE_TEXT:
+    
     MOV AX, TIME_LEFT
     MOV DX, 0
     MOV CX, 100
     DIV CX          
     
     ADD AL, '0'     
-    MOV DI, 140     
+    MOV DI, 3540       
     MOV ES:[DI], AL
     MOV BYTE PTR ES:[DI+1], 0Fh 
     
@@ -380,6 +388,8 @@ DRAW_TIMER PROC
     MOV ES:[DI+4], AL
     MOV BYTE PTR ES:[DI+5], 0Fh
     
+    POP DI
+    POP SI
     RET
 DRAW_TIMER ENDP
 
