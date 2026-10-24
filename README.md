@@ -26,7 +26,7 @@ Bu proje, Intel 8086 mikroişlemci mimarisi temel alınarak **Assembly dili** il
 ## 🛠️ Kurulum ve Çalıştırma
 
 1. Bilgisayarınızda [emu8086](https://emu8086-microprocessor-emulator.en.softonic.com/) emülatörünün kurulu olduğundan emin olun.
-2. Bu repoyu bilgisayarınıza klonlayın veya `maze.asm` dosyasını indirin.
+2. Bu repoyu bilgisayarınıza klonlayın veya `maze_game.asm` dosyasını indirin.
 3. Dosyayı **emu8086** programı ile açın.
 4. Üst menüden **"Emulate"** butonuna tıklayın.
 5. Açılan kontrol penceresinde **"Run"** butonuna basarak oyunu başlatın. 
